@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+enum QueueType {
+  SIMPLE = 0;
+  MULTIPLE = 1;
+}
+
+message Queue {
+  string name = 1;
+  QueueType type = 2;
+}
+service MeuQoelhoMq {
+  rpc createQueue(Queue) returns (Queue) {}
+}
