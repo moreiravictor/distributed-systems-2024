@@ -1,6 +1,6 @@
 from typing import List
-import meu_qoelho_mq_pb2_grpc
-import meu_qoelho_mq_pb2
+from protocols import meu_qoelho_mq_pb2_grpc
+from protocols import meu_qoelho_mq_pb2
 
 class MeuQoelhoMqServicer(meu_qoelho_mq_pb2_grpc.MeuQoelhoMqServicer):
   queues: List[meu_qoelho_mq_pb2.Queue] = []

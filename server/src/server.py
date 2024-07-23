@@ -1,7 +1,7 @@
 import grpc
 from concurrent import futures
-import meu_qoelho_mq_pb2_grpc
-import controller
+from protocols import meu_qoelho_mq_pb2_grpc
+from src import controller
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

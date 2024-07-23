@@ -1,5 +1,5 @@
-import meu_qoelho_mq_pb2_grpc
-import meu_qoelho_mq_pb2
+from protocols import meu_qoelho_mq_pb2_grpc
+from protocols import meu_qoelho_mq_pb2
 import grpc
 
 channel = grpc.insecure_channel('localhost:50051')
