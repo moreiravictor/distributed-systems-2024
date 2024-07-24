@@ -1,3 +1,6 @@
 server/.venv
 server/src/__pycache__
-server/protocols
+server/protocols/*
+!server/protocols/.gitkeep
+server/src/protocols/*
+!server/src/protocols/.gitkeep
