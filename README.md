@@ -27,6 +27,11 @@ Run:
 ./setup.sh
 ```
 
+This file will:
+- Create python protocol files using `protos/meu-qoelho-mq.proto` and put them in the `server/src/protocols` folder
+- Install python dependencies from `server/requirements.txt`
+- Install node dependencies from `client-node/package.json`
+
 ## Server
 
 To run server:
