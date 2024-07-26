@@ -6,12 +6,13 @@ To setup your virtual env firstly run:
 
 ```
 virtualenv venv
-source .venv/bin/activate
+source venv/bin/activate
 ```
 
 and then run following to install dependencies:
 
 ```
+cd ./server
 pip install -r requirements.txt
 ```
 
@@ -20,8 +21,8 @@ pip install -r requirements.txt
 To generate protocol files run:
 
 ```
-cd ./server
-./scripts/generate-protos.sh
+cd ./protos
+./generate-python-protos.sh
 ```
 
 And then to run server:
