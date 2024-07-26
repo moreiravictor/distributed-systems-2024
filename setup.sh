@@ -15,4 +15,8 @@ cd ../server
 # Install the requirements
 pip install -r requirements.txt
 
+cd ../client-node
+
+npm install
+
 echo "All tasks completed successfully."
