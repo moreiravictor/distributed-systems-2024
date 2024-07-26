@@ -1,14 +1,52 @@
 syntax = "proto3";
 
 enum QueueType {
-  SIMPLE = 0;
-  MULTIPLE = 1;
+  NONE = 0;
+  SIMPLE = 1;
+  MULTIPLE = 2;
 }
 
 message Queue {
   string name = 1;
   QueueType type = 2;
+  int32 pendingMessages = 3;
 }
+
+message RemoveQueueRequest {
+  string name = 1;
+}
+
+message ListQueueResponse {
+  repeated Queue queues = 1;
+}
+
+message MessageType {
+  oneof message {
+    string text_message = 1;
+    bytes bytes_message = 2;
+  }
+}
+
+message PublishMessageRequest {
+  string queueName = 1;
+  MessageType message = 2;
+}
+
+message SignToQueuesRequest {
+  repeated string queuesNames = 1;
+}
+
+message SignToQueuesResponse {
+  string queueName = 1;
+  MessageType message = 2;
+}
+
+message Empty {}
+
 service MeuQoelhoMq {
   rpc createQueue(Queue) returns (Queue) {}
+  rpc removeQueue(RemoveQueueRequest) returns (Empty) {}
+  rpc listQueues(Empty) returns (ListQueueResponse) {}
+  rpc publishMessage(PublishMessageRequest) returns (Empty) {}
+  rpc signToQueues(SignToQueuesRequest) returns (stream SignToQueuesResponse) {}
 }
