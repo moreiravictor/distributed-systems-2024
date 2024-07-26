@@ -9,8 +9,8 @@
 To setup your virtual env firstly run:
 
 ```
-virtualenv venv
-source venv/bin/activate
+virtualenv .venv
+source .venv/bin/activate
 ```
 
 ## Node
