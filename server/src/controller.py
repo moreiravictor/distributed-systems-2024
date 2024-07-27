@@ -1,9 +1,8 @@
 from typing import Dict
 from protocols import meu_qoelho_mq_pb2_grpc
 from protocols import meu_qoelho_mq_pb2
-from models import Queue
+from models import Queue, Subscriber
 from db import DB
-import json
 
 class MeuQoelhoMqServicer(meu_qoelho_mq_pb2_grpc.MeuQoelhoMqServicer):
   queuesMap: Dict[str, Queue] = {}
@@ -38,9 +37,12 @@ class MeuQoelhoMqServicer(meu_qoelho_mq_pb2_grpc.MeuQoelhoMqServicer):
       print("tried to publish message to queue that does not exist")
       raise Exception("queue does not exist")
 
-    queue.messages.append(create_queue_request.message.text_message or create_queue_request.message.bytes_message)
+    message = create_queue_request.message.text_message or create_queue_request.message.bytes_message
+
+    queue.messages.append(message)
 
     self.db.update_queues(self.queuesMap)
+    queue.notify(message)
     # TODO implement message publish to clients
     print("published message successfully")
 
@@ -66,6 +68,20 @@ class MeuQoelhoMqServicer(meu_qoelho_mq_pb2_grpc.MeuQoelhoMqServicer):
               for queue in self.queuesMap.values()]
 
     return meu_qoelho_mq_pb2.ListQueueResponse(queues=queues)
+
+  def signToQueues(self, request, context):
+    sub = Subscriber(ip = context.peer(), current_message=None)
+    for name in request.queuesNames:
+      queue = self.queuesMap.get(name)
+      if (queue != None):
+        queue.subscribe(sub)
+    print(self.queuesMap)
+
+    while (True):
+      if (sub.current_message != None):
+        print("received message")
+        yield [meu_qoelho_mq_pb2.SignToQueuesResponse(message=sub.current_message, queueName= "mocked_queue_name")]
+
 
 
 
