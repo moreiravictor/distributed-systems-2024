@@ -2,9 +2,17 @@ from typing import Dict
 from protocols import meu_qoelho_mq_pb2_grpc
 from protocols import meu_qoelho_mq_pb2
 from models import Queue
+from db import DB
+import json
 
 class MeuQoelhoMqServicer(meu_qoelho_mq_pb2_grpc.MeuQoelhoMqServicer):
   queuesMap: Dict[str, Queue] = {}
+  db: DB
+
+  def __init__(self):
+    self.db = DB()
+    self.queuesMap = self.db.find_queues()
+    print("loaded queues from file")
 
   def createQueue(self, request, context):
     print("received request to create queue " + request.name)
@@ -12,6 +20,7 @@ class MeuQoelhoMqServicer(meu_qoelho_mq_pb2_grpc.MeuQoelhoMqServicer):
 
     if (self.queuesMap.get(new_queue.name) ==  None):
       self.queuesMap[new_queue.name] = Queue(new_queue.name, new_queue.type, [])
+      self.db.update_queues(self.queuesMap)
 
       print("created queue successfully")
       return new_queue
@@ -30,9 +39,10 @@ class MeuQoelhoMqServicer(meu_qoelho_mq_pb2_grpc.MeuQoelhoMqServicer):
       raise Exception("queue does not exist")
 
     queue.messages.append(create_queue_request.message.text_message or create_queue_request.message.bytes_message)
+
+    self.db.update_queues(self.queuesMap)
     # TODO implement message publish to clients
     print("published message successfully")
-    print(self.queuesMap)
 
     return meu_qoelho_mq_pb2.Empty()
 
@@ -42,6 +52,7 @@ class MeuQoelhoMqServicer(meu_qoelho_mq_pb2_grpc.MeuQoelhoMqServicer):
 
     try:
       self.queuesMap.pop(request.name)
+      self.db.update_queues(self.queuesMap)
     except:
       print("tried to delete queue that does not exist")
       raise Exception("queue does not exist")
