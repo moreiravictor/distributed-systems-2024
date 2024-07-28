@@ -2,9 +2,11 @@ from typing import Dict
 from models import Queue
 from io import TextIOWrapper
 import json
+import os
 
 class DB:
-  file_path = "src/db.json"
+  dirname = os.path.dirname(__file__)
+  file_path = os.path.join(dirname, "./db.json") 
 
   def __init__(self):
     try:
