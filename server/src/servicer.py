@@ -3,22 +3,33 @@ from protocols import meu_qoelho_mq_pb2_grpc
 from protocols import meu_qoelho_mq_pb2
 from models import Queue, Subscriber
 from db import DB
+import threading
+from queueservice import QueueService
 
 class MeuQoelhoMqServicer(meu_qoelho_mq_pb2_grpc.MeuQoelhoMqServicer):
   queuesMap: Dict[str, Queue] = {}
   db: DB
+  service: QueueService
 
   def __init__(self):
     self.db = DB()
     self.queuesMap = self.db.find_queues()
     print("loaded queues from file")
 
+    service = QueueService(self.db)
+
+    for queue in self.queuesMap.values():
+      thread = threading.Thread(target=service.start_queue, kwargs={"queue":queue})
+      thread.start()
+    print("started all queues")
+
+
   def createQueue(self, request, context):
     print("received request to create queue " + request.name)
     new_queue = meu_qoelho_mq_pb2.Queue(name = request.name, type = request.type)
 
     if (self.queuesMap.get(new_queue.name) ==  None):
-      self.queuesMap[new_queue.name] = Queue(new_queue.name, new_queue.type, [])
+      self.queuesMap[new_queue.name] = Queue(new_queue.name, new_queue.type, [], [])
       self.db.update_queues(self.queuesMap)
 
       print("created queue successfully")
@@ -42,8 +53,6 @@ class MeuQoelhoMqServicer(meu_qoelho_mq_pb2_grpc.MeuQoelhoMqServicer):
     queue.messages.append(message)
 
     self.db.update_queues(self.queuesMap)
-    queue.notify(message)
-    # TODO implement message publish to clients
     print("published message successfully")
 
     return meu_qoelho_mq_pb2.Empty()
@@ -75,12 +84,17 @@ class MeuQoelhoMqServicer(meu_qoelho_mq_pb2_grpc.MeuQoelhoMqServicer):
       queue = self.queuesMap.get(name)
       if (queue != None):
         queue.subscribe(sub)
-    print(self.queuesMap)
 
     while (True):
       if (sub.current_message != None):
         print("received message")
-        yield [meu_qoelho_mq_pb2.SignToQueuesResponse(message=sub.current_message, queueName= "mocked_queue_name")]
+        message = meu_qoelho_mq_pb2.MessageType(text_message=sub.current_message) if isinstance(sub.current_message, str) else meu_qoelho_mq_pb2.MessageType(bytes_message==sub.current_message)
+        response = meu_qoelho_mq_pb2.SignToQueuesResponse(
+          message=message,
+          queueName= "mocked_queue_name"
+        )
+        yield response
+        sub.current_message = None
 
 
 

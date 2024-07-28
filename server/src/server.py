@@ -1,7 +1,7 @@
 import grpc
 from concurrent import futures
 from protocols import meu_qoelho_mq_pb2_grpc
-from controller import MeuQoelhoMqServicer
+from servicer import MeuQoelhoMqServicer
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
