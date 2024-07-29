@@ -29,3 +29,6 @@ class Queue:
 
   def subscribe(self, subscriber_id: str):
     self.subscribers.append(subscriber_id)
+
+  def get_type_as_int(self) -> int:
+        return self.type.value

@@ -1,7 +1,7 @@
 from typing import Dict
 from protocols import meu_qoelho_mq_pb2_grpc
 from protocols import meu_qoelho_mq_pb2
-from models import Queue, Subscriber
+from models import Queue, Subscriber, QueueType
 from db import DB
 import threading
 from queueservice import QueueService
@@ -29,7 +29,7 @@ class MeuQoelhoMqServicer(meu_qoelho_mq_pb2_grpc.MeuQoelhoMqServicer):
     new_queue = meu_qoelho_mq_pb2.Queue(name = request.name, type = request.type)
 
     if (self.queuesMap.get(new_queue.name) ==  None):
-      self.queuesMap[new_queue.name] = Queue(new_queue.name, new_queue.type, [], [])
+      self.queuesMap[new_queue.name] = Queue(new_queue.name, QueueType(new_queue.type), [], [])
       self.db.update_queues(self.queuesMap)
 
       print("created queue successfully")
@@ -71,9 +71,9 @@ class MeuQoelhoMqServicer(meu_qoelho_mq_pb2_grpc.MeuQoelhoMqServicer):
     print("deleted queue successfully")
     return meu_qoelho_mq_pb2.Empty()
 
-  def listQueues(self, request, context):
+  def listQueues(self, _request, _context):
     print("received request to list queues")
-    queues = [meu_qoelho_mq_pb2.Queue(name=queue.name, type=queue.type, pendingMessages=len(queue.messages))
+    queues = [meu_qoelho_mq_pb2.Queue(name=queue.name, type=queue.get_type_as_int(), pendingMessages=len(queue.messages))
               for queue in self.queuesMap.values()]
 
     return meu_qoelho_mq_pb2.ListQueueResponse(queues=queues)
