@@ -5,7 +5,7 @@ from models import Queue, Subscriber, QueueType
 from db import DB
 import threading
 from queueservice import QueueService
-
+import time
 class MeuQoelhoMqServicer(meu_qoelho_mq_pb2_grpc.MeuQoelhoMqServicer):
   queuesMap: Dict[str, Queue] = {}
   db: DB
@@ -80,21 +80,37 @@ class MeuQoelhoMqServicer(meu_qoelho_mq_pb2_grpc.MeuQoelhoMqServicer):
 
   def signToQueues(self, request, context):
     sub = Subscriber(ip = context.peer(), current_message=None)
+    print('bbb')
+    contador = 0
+
+    while True:
+      contador = contador + 1
+      message = meu_qoelho_mq_pb2.MessageType(text_message="msg ex:" + str(contador)) 
+      data = meu_qoelho_mq_pb2.SignToQueuesResponse(
+                message=message,
+                queueName= "mocked_queue_name"
+              )
+      yield data
+      time.sleep(1)  # Adjust the sleep time as needed
+      if not context.is_active():
+          break
+   
+    
     for name in request.queuesNames:
       queue = self.queuesMap.get(name)
       if (queue != None):
         queue.subscribe(sub)
 
-    while (True):
-      if (sub.current_message != None):
-        print("received message")
-        message = meu_qoelho_mq_pb2.MessageType(text_message=sub.current_message) if isinstance(sub.current_message, str) else meu_qoelho_mq_pb2.MessageType(bytes_message==sub.current_message)
-        response = meu_qoelho_mq_pb2.SignToQueuesResponse(
-          message=message,
-          queueName= "mocked_queue_name"
-        )
-        yield response
-        sub.current_message = None
+    # while (True):
+    #   if (sub.current_message != None):
+    #     print("received message")
+        # message = meu_qoelho_mq_pb2.MessageType(text_message=sub.current_message) if isinstance(sub.current_message, str) else meu_qoelho_mq_pb2.MessageType(bytes_message==sub.current_message)
+    #     response = meu_qoelho_mq_pb2.SignToQueuesResponse(
+    #       message=message,
+    #       queueName= "mocked_queue_name"
+    #     )
+    #     yield response
+    #     sub.current_message = None
 
 
 
