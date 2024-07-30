@@ -52,3 +52,13 @@ python3 ./server/src/stub.py
 ```
 node ./client-node/index.js
 ```
+
+
+## Client Flags
+
+- create --name=name
+- publish --message=abc --queue=name
+- remove --queue=name
+- list
+- sign --queue=name
+
