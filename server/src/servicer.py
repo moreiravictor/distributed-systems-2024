@@ -15,7 +15,7 @@ class MeuQoelhoMqServicer(meu_qoelho_mq_pb2_grpc.MeuQoelhoMqServicer):
 
     created_queue = self.service.add_queue(name = request.name, type = request.type)
 
-    return meu_qoelho_mq_pb2.Queue(name = created_queue.name, type = created_queue.type)
+    return meu_qoelho_mq_pb2.Queue(name = created_queue.name, type = request.type)
 
 
   def publishMessage(self, request, context):
