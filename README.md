@@ -56,9 +56,9 @@ node ./client-node/index.js
 
 ## Client Flags
 
-- create --name=name
-- publish --message=abc --queue=name
-- remove --queue=name
+- create --name=channel1
+- publish  --name=channel1 --message=abc
+- remove --name=channel1
 - list
-- sign --queue=name
+- sign --name=channel1
 
