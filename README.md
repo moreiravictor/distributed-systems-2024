@@ -52,3 +52,13 @@ python3 ./server/src/stub.py
 ```
 node ./client-node/index.js
 ```
+
+
+## Client Flags
+
+- create --name=channel1
+- publish  --name=channel1 --message=abc
+- remove --name=channel1
+- list
+- sign --name=channel1
+
