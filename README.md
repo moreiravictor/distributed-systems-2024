@@ -48,11 +48,6 @@ To tryout test stub, open another terminal tab and run:
 ```
 python3 ./server/src/stub.py
 ```
-### Node
-```
-node ./client-node/index.js
-```
-
 
 ## Client Flags
 
