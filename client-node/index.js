@@ -35,7 +35,7 @@ switch (args._[0]) {
     }
     
     if (!types.includes(type)) {
-      console.error('type must be ' + types.join('or '))
+      console.error('type must be ' + types.join(' or '))
       return;
     }
 
