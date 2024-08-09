@@ -17,7 +17,7 @@ function main() {
                                        grpc.credentials.createInsecure());
   var queueData = {
     name: 'my-queue', // Set your desired queue name
-    type: stub.QueueType.SIMPLE // Set the appropriate queue type (SIMPLE or MULTIPLE)
+    type: 'SIMPLE' // Set the appropriate queue type (SIMPLE or MULTIPLE)
   };
   
   client.createQueue(queueData, function(err, response) {
