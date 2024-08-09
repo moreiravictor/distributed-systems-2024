@@ -39,13 +39,13 @@ switch (args._[0]) {
       return;
     }
 
-    var queueData = {
+    var req = {
       name,
       type,
     };
 
       
-    client.createQueue(queueData, function(err, response) {
+    client.createQueue(req, function(err, response) {
       if (err) {
         console.error('Error creating queue:', err);
         return;
@@ -67,14 +67,14 @@ switch (args._[0]) {
       return;
     }
 
-    const messageData = {
-      queueName: 'channel1',
+    var req = {
+      queueName: name,
       message: {
         text_message: message // or use `bytes_message` for sending bytes
       }
     };
       
-    client.publishMessage(messageData, function(err, response) {
+    client.publishMessage(req, function(err, response) {
       if (err) {
         console.error('error publishing message:', err);
         return;
@@ -82,7 +82,28 @@ switch (args._[0]) {
 
       console.log('message published:', response);
     });
-    
+  case 'remove': 
+    var name = args.name;
+    var message = args.message;
+
+    if (!name) {
+      console.error('name param is required')
+      return;
+    }
+
+    var req = {
+      name: name,
+    };
+      
+    client.removeQueue(req, function(err, response) {
+      if (err) {
+        console.error('error delete queue:', err);
+        return;
+      }
+
+      console.log('queue deleted:', response);
+    });
+
   default:
     console.error('Method does not exists');
     break;
