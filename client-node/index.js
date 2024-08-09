@@ -53,6 +53,7 @@ switch (args._[0]) {
 
       console.log('Queue created successfully:', response);
     });
+    break;
   case 'publish': 
     var name = args.name;
     var message = args.message;
@@ -82,6 +83,7 @@ switch (args._[0]) {
 
       console.log('message published:', response);
     });
+    break;
   case 'remove': 
     var name = args.name;
     var message = args.message;
@@ -103,7 +105,17 @@ switch (args._[0]) {
 
       console.log('queue deleted:', response);
     });
+    break;
+  case 'list': 
+    client.listQueues(null, function(err, response) {
+      if (err) {
+        console.error('error list queues:', err);
+        return;
+      }
 
+      console.log('list os queues:', response);
+    });
+    break;
   default:
     console.error('Method does not exists');
     break;
