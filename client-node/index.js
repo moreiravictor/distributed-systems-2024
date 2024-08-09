@@ -116,6 +116,32 @@ switch (args._[0]) {
       console.log('list os queues:', response);
     });
     break;
+  case 'sign': 
+    var names = args.names;
+
+    if (!names) {
+      console.error('name param is required')
+      return;
+    }
+
+    var namesArr = names.split(',')
+
+    var req = {
+      queuesNames: namesArr 
+    }
+
+    client.signToQueues(req)
+      .on('data', function(response) {
+        console.log('sign response queue:', response.queueName);
+        console.log('sign response message:', response.message);
+      })
+      .on('error', function(error) {
+          console.error('error to sign:', error);
+      })
+      .on('end', function() {
+        console.log('sign ended.');
+    });
+    break;
   default:
     console.error('Method does not exists');
     break;

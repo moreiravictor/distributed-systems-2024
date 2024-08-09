@@ -60,7 +60,7 @@ node ./client-node/index.js
 - publish  --name=channel1 --message=abc
 - remove --name=channel1
 - list
-- sign --name=channel1
+- sign --names=channel1,test0
 
 
 ### Node examples
@@ -75,4 +75,20 @@ Publish a message to queue
 
 ```
 node ./client-node/index.js publish --name=channel1 --message=abc
+```
+
+Remove queue
+
+```
+node ./client-node/index.js remove --name=channel1
+```
+
+List queues
+```
+node ./client-node/index.js list
+```
+
+Sign queues
+```
+node ./client-node/index.js sign --name=channel1,test0
 ```
